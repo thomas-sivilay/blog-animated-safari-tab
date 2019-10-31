@@ -9,23 +9,24 @@
 import SwiftUI
 
 struct ProductListView: View {
+    
+    @Binding var animateTote: Bool
 
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack {
                     ForEach(Product.allCases, id: \.self) { product in
-                        HStack {
-                            ProductImageView(imageName: product.imageName)
-                            Text(product.rawValue.uppercased())
-                                .kerning(-0.5)
-                                .bold()
-                            Spacer()
-                            Text("$") + Text(Int.random(in: 3...44).description).bold()
-                        }
-                        .padding()
-                        .frame(height: 120)
-                        .background(self.makeRowBackground(color: Color.gray.opacity(0.1)))
+                        self.makeRow(product: product)
+                            .onTapGesture {
+                                withAnimation {
+                                    self.animateTote = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                        self.animateTote = false
+                                    }
+                                }
+                                print("animated tote")
+                            }
                     }
                     Spacer()
                 }
@@ -33,6 +34,20 @@ struct ProductListView: View {
             }
             .navigationBarTitle("Products")
         }
+    }
+    
+    private func makeRow(product: Product) -> some View {
+        HStack {
+            ProductImageView(imageName: product.imageName)
+            Text(product.rawValue.uppercased())
+                .kerning(-0.5)
+                .bold()
+            Spacer()
+            Text("$") + Text(Int.random(in: 3...2413).description).bold()
+        }
+        .padding()
+        .frame(height: 120)
+        .background(self.makeRowBackground(color: Color.gray.opacity(0.1)))
     }
     
     private func makeRowBackground(color: Color) -> some View {

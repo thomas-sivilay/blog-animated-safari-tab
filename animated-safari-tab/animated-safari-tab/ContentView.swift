@@ -10,6 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
 
+    @State private var animateTote: Bool = false
     @State private var selection = 0
  
     var body: some View {
@@ -20,7 +21,7 @@ struct ContentView: View {
     }
     
     private var productTab: some View {
-        ProductListView()
+        ProductListView(animateTote: $animateTote)
             .tabItem {
                 VStack {
                     Image(systemName: "circle.grid.3x3")
@@ -31,15 +32,26 @@ struct ContentView: View {
     }
     
     private var toteTab: some View {
-          ToteView()
-              .tabItem {
-                  VStack {
-                      Image(systemName: "bag")
-                      Text("Checkout")
-                  }
-              }
-              .tag(1)
-      }
+        ToteView()
+            .tabItem {
+               animatedTote
+            }
+            .tag(1)
+    }
+    
+    private var animatedTote: some View {
+        VStack {
+            Image(systemName: animateTote ? "bag.fill" : "bag")
+                .font(Font.system(size: animateTote ? 34 : 20))
+                .animation(.easeIn(duration: 1))
+                .transition(.opacity)
+            if !animateTote {
+                Text("Checkout")
+            } else {
+                Text("Nice !!!")
+            }
+        }
+    }
 }
 
 struct ContentView_Previews: PreviewProvider {
